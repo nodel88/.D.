@@ -151,8 +151,295 @@
       color: rgba(255, 255, 255, 0.7);
       text-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
       margin-top: -1.3rem;
-      margin-bottom: 2.3rem;
+      margin-bottom: 1rem;
       white-space: nowrap;
+    }
+
+    /* ===== 单排内嵌播放器 ===== */
+    .inline-player {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      background: rgba(10, 8, 15, 0.75);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 60px;
+      padding: 12px 28px;
+      margin: 0 auto 1.5rem;
+      max-width: 720px;
+      border: 1px solid rgba(255, 40, 80, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .player-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 6px;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .player-btn:hover {
+      color: #ff3060;
+      background: rgba(255, 30, 70, 0.12);
+      transform: scale(1.05);
+    }
+
+    .player-btn.play-btn {
+      width: 44px;
+      height: 44px;
+      font-size: 1.2rem;
+      background: rgba(255, 30, 70, 0.15);
+      color: #ff3060;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 50, 80, 0.3);
+      box-shadow: 0 0 18px rgba(255, 20, 60, 0.2);
+    }
+
+    .player-btn.play-btn:hover {
+      background: rgba(255, 40, 80, 0.25);
+      border-color: rgba(255, 60, 100, 0.5);
+      box-shadow: 0 0 28px rgba(255, 20, 60, 0.4);
+      color: #fff;
+    }
+
+    .track-info {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.85);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      flex-shrink: 1;
+      min-width: 55px;
+      text-align: center;
+    }
+
+    /* === 进度条 - 深色风格 === */
+    .progress-wrap {
+      flex: 1;
+      min-width: 70px;
+      max-width: 240px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      cursor: pointer;
+      position: relative;
+      transition: height 0.15s ease;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .progress-wrap:hover {
+      height: 7px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff2850, #ff5070);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.05s linear;
+      position: relative;
+      box-shadow: 0 0 10px rgba(255, 30, 60, 0.5);
+    }
+
+    .progress-scrubber {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 13px;
+      height: 13px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 0 8px rgba(255,255,255,0.3);
+      left: 0%;
+      opacity: 0;
+      transition: opacity 0.15s ease, left 0.05s linear;
+      pointer-events: none;
+    }
+
+    .progress-wrap:hover .progress-scrubber,
+    .progress-wrap.dragging .progress-scrubber {
+      opacity: 1;
+    }
+
+    .time-display {
+      font-size: 0.62rem;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-width: 34px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .volume-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* === 音量滑块 - 深色风格 === */
+    .volume-slider-mac {
+      width: 55px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      cursor: pointer;
+      position: relative;
+      transition: height 0.15s ease;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .volume-slider-mac:hover {
+      height: 7px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .volume-fill-mac {
+      height: 100%;
+      background: linear-gradient(90deg, #ff2850, #ff5070);
+      border-radius: 10px;
+      width: 70%;
+      position: relative;
+      box-shadow: 0 0 10px rgba(255, 30, 60, 0.5);
+    }
+
+    .volume-scrubber-mac {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 13px;
+      height: 13px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 0 8px rgba(255,255,255,0.3);
+      left: 70%;
+      opacity: 0;
+      transition: opacity 0.15s ease, left 0.05s linear;
+      pointer-events: none;
+    }
+
+    .volume-slider-mac:hover .volume-scrubber-mac,
+    .volume-slider-mac.dragging .volume-scrubber-mac {
+      opacity: 1;
+    }
+
+    .playlist-dropdown {
+      position: relative;
+    }
+
+    .playlist-toggle {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 6px;
+      transition: all 0.2s;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .playlist-toggle:hover {
+      color: #ff3060;
+      background: rgba(255, 30, 70, 0.12);
+    }
+
+    /* === 播放列表菜单 - 深色风格 === */
+    .playlist-menu {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      margin-bottom: 8px;
+      background: rgba(8, 6, 12, 0.97);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 40, 80, 0.2);
+      border-radius: 14px;
+      min-width: 210px;
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 100;
+      padding: 8px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    }
+
+    /* === 播放列表滚动条 - 深色风格 === */
+    .playlist-menu::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .playlist-menu::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      margin: 4px 0;
+    }
+
+    .playlist-menu::-webkit-scrollbar-thumb {
+      background: rgba(255, 40, 80, 0.3);
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    .playlist-menu::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 40, 80, 0.5);
+    }
+
+    /* Firefox 滚动条 */
+    .playlist-menu {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 40, 80, 0.3) rgba(255, 255, 255, 0.03);
+    }
+
+    .playlist-menu.show {
+      display: block;
+    }
+
+    .playlist-track {
+      padding: 10px 14px;
+      font-size: 0.73rem;
+      color: rgba(255, 255, 255, 0.55);
+      cursor: pointer;
+      border-radius: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.04em;
+      transition: all 0.2s ease;
+    }
+
+    .playlist-track:hover {
+      background: rgba(255, 30, 70, 0.12);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .playlist-track.active {
+      color: #ff3060;
+      font-weight: 600;
+      background: rgba(255, 30, 70, 0.08);
+      border-left: 2px solid #ff3060;
     }
 
     .slogan {
@@ -466,6 +753,31 @@
         width: 100%;
         min-width: auto;
       }
+      .inline-player {
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 40px;
+      }
+      .track-info {
+        max-width: 70px;
+        font-size: 0.65rem;
+      }
+      .volume-slider-mac {
+        width: 35px;
+      }
+      .progress-wrap {
+        min-width: 35px;
+      }
+      .player-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+      }
+      .player-btn.play-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+      }
     }
 
     @media (min-width: 481px) and (max-width: 768px) {
@@ -493,8 +805,33 @@
     <div class="hero">
       <h1 class="main-logo">Defqon-1.com</h1>
       <div class="sub-logo">FESTIVAL SOUVENIRS</div>
-            <div class="email-box">
-              <p style="color:#ccc; letter-spacing:0.1em;">The new website is coming soon, Stay tuned! Recommend info to us: <a href="mailto:z58@outlook.com">z58@outlook.com</a></p>
+
+      <!-- ========== 单排内嵌播放器 ========== -->
+      <div class="inline-player" id="inlinePlayer">
+        <button class="player-btn" id="prevBtn" title="Previous"><i class="fas fa-backward-step"></i></button>
+        <button class="player-btn play-btn" id="playBtn" title="Play/Pause"><i class="fas fa-play"></i></button>
+        <button class="player-btn" id="nextBtn" title="Next"><i class="fas fa-forward-step"></i></button>
+        <span class="track-info" id="trackLabel">Defqon.1 Anthem</span>
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-fill" id="progressFill"></div>
+          <div class="progress-scrubber" id="progressScrubber"></div>
+        </div>
+        <span class="time-display" id="timeLabel">0:00</span>
+        <div class="volume-wrap">
+          <button class="player-btn" id="muteBtn" title="Mute"><i class="fas fa-volume-up"></i></button>
+          <div class="volume-slider-mac" id="volumeSliderMac">
+            <div class="volume-fill-mac" id="volumeFillMac"></div>
+            <div class="volume-scrubber-mac" id="volumeScrubberMac"></div>
+          </div>
+        </div>
+        <div class="playlist-dropdown">
+          <button class="playlist-toggle" id="playlistToggle" title="Playlist"><i class="fas fa-list"></i></button>
+          <div class="playlist-menu" id="playlistMenu"></div>
+        </div>
+      </div>
+
+      <div class="email-box">
+        <p style="color:#ccc; letter-spacing:0.1em;">The new website is coming soon, Stay tuned! Recommend info to us: <a href="mailto:z58@outlook.com">z58@outlook.com</a></p>
       </div>
       <div class="slogan">
         <span><i class="fas fa-compact-disc"></i> CD · DVD</span>
@@ -533,14 +870,13 @@
     <div class="festival-info">
       <div class="info-text">
         <h2 align="center"><a href="https://www.q-dance.com/en/events/defqon-1/" target="_blank" rel="noopener">Defqon.1 Festival</a></h2>
-        <p>Defqon.1 is the world’s largest harder styles festival, created and hosted by Q-dance. Since its first edition in 2003, the event has grown from a one-day beach gathering in Almere to a four-day weekend camping festival in Biddinghuizen, the Netherlands.<br />
+        <p>Defqon.1 is the world's largest harder styles festival, created and hosted by Q-dance. Since its first edition in 2003, the event has grown from a one-day beach gathering in Almere to a four-day weekend camping festival in Biddinghuizen, the Netherlands.<br />
 Every year, over 100,000 tribe members travel to the sacred grounds from more than 110 countries across the globe to unite under one flag of harder dance music: hardstyle, rawstyle, hardcore, hard dance and all its subgenres.<br />
 The World of Defqon.1 features multiple massive stages, iconic Power Hour sets, the legendary closing Endshow fireworks, camping villages, unique tribal culture and a fully immersive weekend experience. The festival stands for unity, freedom and belonging for every harder styles fan, known together as The Tribe.<br />
 International editions of Defqon.1 were previously held in Australia (2009–2018) and Chile, before being put on indefinite hiatus due to venue and operational challenges. Each year a unique theme and official festival anthem are created to represent the spirit of that edition.</p>
 			<p></p>	 
 		  <h2 align="center"><a href="https://www.q-dance.com/en/events/defqon-1/" target="_blank" rel="noopener">The Path – The Full History of Defqon.1</a></h2>
-<p>The Path tells the complete legacy of Defqon.1, tracing every milestone from its birth in 2003 up to today’s multi-day tribal festival.<br />2003: The very first Defqon.1 lands at Almeerderstrand, Almere. A single-day outdoor event with one main stage, welcoming thousands of early hardstyle fans. The Prophet delivered the debut festival anthem <em>Emergency Call</em>.<br />2003–2010: The festival stays a one-day summer event in Almere, expanding lineups, adding secondary stages and releasing a new official anthem each year by leading harder styles producers including Headhunterz, Showtek and Brennan Heart.<br />2011: A defining turning point. Defqon.1 relocates permanently to Biddinghuizen, next to Walibi Holland theme park, and transforms into a 3-day weekend camping festival, introducing overnight camping, more stages and the first official Power Hour concept.<br />2009–2018: Defqon.1 Australia runs annually in Sydney, building a massive Southern Hemisphere harder styles community. Chile editions launch in the 2010s to serve South American fans.<br />2020–2021: Physical live events paused globally due to pandemic restrictions; Q-dance hosted online digital editions named Defqon.1 At Home to keep the tribe connected virtually.<br />2022–Present: Defqon.1 expands to a full four-day format (Thursday The Gathering to Sunday Endshow), drawing record crowds of over 100,000 visitors annually. New themed zones, stage designs and annual anthems continue to reimagine the World of Defqon.1, while The Tribe culture remains the core heart of the festival.<br />The Path also exists as a digital feature inside the official Defqon.1 mobile app: fans complete quests, earn XP, unlock ranks (Challenger, Warrior, Legend) and collect badges marking their own personal Defqon.1 journey.</p> 
-	      
+<p>The Path tells the complete legacy of Defqon.1, tracing every milestone from its birth in 2003 up to today's multi-day tribal festival.<br />2003: The very first Defqon.1 lands at Almeerderstrand, Almere. A single-day outdoor event with one main stage, welcoming thousands of early hardstyle fans. The Prophet delivered the debut festival anthem <em>Emergency Call</em>.<br />2003–2010: The festival stays a one-day summer event in Almere, expanding lineups, adding secondary stages and releasing a new official anthem each year by leading harder styles producers including Headhunterz, Showtek and Brennan Heart.<br />2011: A defining turning point. Defqon.1 relocates permanently to Biddinghuizen, next to Walibi Holland theme park, and transforms into a 3-day weekend camping festival, introducing overnight camping, more stages and the first official Power Hour concept.<br />2009–2018: Defqon.1 Australia runs annually in Sydney, building a massive Southern Hemisphere harder styles community. Chile editions launch in the 2010s to serve South American fans.<br />2020–2021: Physical live events paused globally due to pandemic restrictions; Q-dance hosted online digital editions named Defqon.1 At Home to keep the tribe connected virtually.<br />2022–Present: Defqon.1 expands to a full four-day format (Thursday The Gathering to Sunday Endshow), drawing record crowds of over 100,000 visitors annually. New themed zones, stage designs and annual anthems continue to reimagine the World of Defqon.1, while The Tribe culture remains the core heart of the festival.<br />The Path also exists as a digital feature inside the official Defqon.1 mobile app: fans complete quests, earn XP, unlock ranks (Challenger, Warrior, Legend) and collect badges marking their own personal Defqon.1 journey.</p> 
         </div>
     </div>
 
@@ -707,6 +1043,174 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         setTimeout(() => { this.style.transform = ''; }, 150);
       });
     });
+  </script>
+
+  <!-- ========== 播放器逻辑 ========== -->
+  <script>
+    (function() {
+      const playlist = [
+        { file: 'music/1.mp3', name: 'Defqon-1-1', artist: 'Hardopera' },
+        { file: 'music/2.mp3', name: 'Defqon-1-2', artist: 'Hardopera' },
+        { file: 'music/3.mp3', name: 'Defqon-1-3', artist: 'Hardopera' },
+        { file: 'music/4.mp3', name: 'Defqon-1-4', artist: 'Hardopera' },
+        { file: 'music/5.mp3', name: 'Defqon-1-5', artist: 'Hardopera' },
+        { file: 'music/6.mp3', name: 'Defqon-1-6', artist: 'Hardopera' }
+      ];
+
+      let currentIndex = 0;
+      let isPlaying = false;
+      let isMuted = false;
+      let volume = 0.7;
+      const audio = new Audio();
+
+      const playBtn = document.getElementById('playBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const muteBtn = document.getElementById('muteBtn');
+      const trackLabel = document.getElementById('trackLabel');
+      const timeLabel = document.getElementById('timeLabel');
+      const progressWrap = document.getElementById('progressWrap');
+      const progressFill = document.getElementById('progressFill');
+      const progressScrubber = document.getElementById('progressScrubber');
+      const volumeSliderMac = document.getElementById('volumeSliderMac');
+      const volumeFillMac = document.getElementById('volumeFillMac');
+      const volumeScrubberMac = document.getElementById('volumeScrubberMac');
+      const playlistToggle = document.getElementById('playlistToggle');
+      const playlistMenu = document.getElementById('playlistMenu');
+
+      audio.volume = volume;
+
+      function loadTrack(index) {
+        currentIndex = index;
+        audio.src = playlist[index].file;
+        trackLabel.textContent = playlist[index].name;
+        updatePlaylistActive();
+        if (isPlaying) audio.play().catch(() => {});
+      }
+
+      function togglePlay() {
+        if (isPlaying) { audio.pause(); isPlaying = false; }
+        else { audio.play().then(() => { isPlaying = true; }).catch(() => { isPlaying = false; }); }
+        updatePlayBtn();
+      }
+
+      function updatePlayBtn() {
+        playBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+      }
+
+      function nextTrack() { currentIndex = (currentIndex + 1) % playlist.length; loadTrack(currentIndex); if (isPlaying) audio.play().catch(() => {}); }
+      function prevTrack() { currentIndex = (currentIndex - 1 + playlist.length) % playlist.length; loadTrack(currentIndex); if (isPlaying) audio.play().catch(() => {}); }
+
+      function formatTime(s) {
+        if (isNaN(s) || !isFinite(s)) return '0:00';
+        const m = Math.floor(s / 60); const sec = Math.floor(s % 60);
+        return `${m}:${sec.toString().padStart(2, '0')}`;
+      }
+
+      function updateProgressUI(pct) {
+        progressFill.style.width = pct + '%';
+        progressScrubber.style.left = pct + '%';
+      }
+
+      function updateProgress() {
+        if (audio.duration && isFinite(audio.duration)) {
+          const pct = (audio.currentTime / audio.duration) * 100;
+          updateProgressUI(pct);
+          timeLabel.textContent = formatTime(audio.currentTime);
+        }
+      }
+
+      function setProgress(e) {
+        const rect = progressWrap.getBoundingClientRect();
+        let pct = (e.clientX - rect.left) / rect.width;
+        pct = Math.max(0, Math.min(1, pct));
+        if (audio.duration && isFinite(audio.duration)) audio.currentTime = pct * audio.duration;
+        updateProgressUI(pct * 100);
+      }
+
+      function updateVolumeUI(pct) {
+        volumeFillMac.style.width = pct + '%';
+        volumeScrubberMac.style.left = pct + '%';
+      }
+
+      function updateVolumeDisplay() {
+        const pct = volume * 100;
+        updateVolumeUI(pct);
+        muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+        audio.volume = isMuted ? 0 : volume;
+      }
+
+      function setVolume(e) {
+        const rect = volumeSliderMac.getBoundingClientRect();
+        let pct = (e.clientX - rect.left) / rect.width;
+        pct = Math.max(0, Math.min(1, pct));
+        volume = pct;
+        if (!isMuted) audio.volume = volume;
+        updateVolumeDisplay();
+      }
+
+      function toggleMute() { isMuted = !isMuted; audio.volume = isMuted ? 0 : volume; updateVolumeDisplay(); }
+
+      function buildPlaylist() {
+        playlistMenu.innerHTML = '';
+        playlist.forEach((t, i) => {
+          const div = document.createElement('div');
+          div.className = 'playlist-track';
+          div.textContent = t.name;
+          div.addEventListener('click', () => { loadTrack(i); if (!isPlaying) togglePlay(); else audio.play().catch(() => {}); playlistMenu.classList.remove('show'); });
+          playlistMenu.appendChild(div);
+        });
+        updatePlaylistActive();
+      }
+
+      function updatePlaylistActive() {
+        const items = playlistMenu.querySelectorAll('.playlist-track');
+        items.forEach((el, i) => el.classList.toggle('active', i === currentIndex));
+      }
+
+      playBtn.addEventListener('click', togglePlay);
+      prevBtn.addEventListener('click', prevTrack);
+      nextBtn.addEventListener('click', nextTrack);
+      muteBtn.addEventListener('click', toggleMute);
+
+      // 进度条拖拽
+      let dragProgress = false;
+      progressWrap.addEventListener('mousedown', (e) => { dragProgress = true; progressWrap.classList.add('dragging'); setProgress(e); });
+      window.addEventListener('mousemove', (e) => { if (dragProgress) setProgress(e); });
+      window.addEventListener('mouseup', () => { dragProgress = false; progressWrap.classList.remove('dragging'); });
+
+      progressWrap.addEventListener('touchstart', (e) => { dragProgress = true; progressWrap.classList.add('dragging'); setProgress(e.touches[0]); });
+      window.addEventListener('touchmove', (e) => { if (dragProgress) setProgress(e.touches[0]); });
+      window.addEventListener('touchend', () => { dragProgress = false; progressWrap.classList.remove('dragging'); });
+
+      // 音量拖拽
+      let dragVolume = false;
+      volumeSliderMac.addEventListener('mousedown', (e) => { dragVolume = true; volumeSliderMac.classList.add('dragging'); setVolume(e); });
+      window.addEventListener('mousemove', (e) => { if (dragVolume) setVolume(e); });
+      window.addEventListener('mouseup', () => { dragVolume = false; volumeSliderMac.classList.remove('dragging'); });
+
+      volumeSliderMac.addEventListener('touchstart', (e) => { dragVolume = true; volumeSliderMac.classList.add('dragging'); setVolume(e.touches[0]); });
+      window.addEventListener('touchmove', (e) => { if (dragVolume) setVolume(e.touches[0]); });
+      window.addEventListener('touchend', () => { dragVolume = false; volumeSliderMac.classList.remove('dragging'); });
+
+      playlistToggle.addEventListener('click', (e) => { e.stopPropagation(); playlistMenu.classList.toggle('show'); });
+      document.addEventListener('click', () => { playlistMenu.classList.remove('show'); });
+
+      audio.addEventListener('timeupdate', updateProgress);
+      audio.addEventListener('loadedmetadata', () => { timeLabel.textContent = formatTime(audio.duration); });
+      audio.addEventListener('ended', nextTrack);
+      audio.addEventListener('play', () => { isPlaying = true; updatePlayBtn(); });
+      audio.addEventListener('pause', () => { isPlaying = false; updatePlayBtn(); });
+
+      function init() {
+        buildPlaylist();
+        loadTrack(0);
+        updateVolumeDisplay();
+        updatePlayBtn();
+        audio.play().then(() => { isPlaying = true; updatePlayBtn(); }).catch(() => {});
+      }
+      init();
+    })();
   </script>
 </body>
 </html>
