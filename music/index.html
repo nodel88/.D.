@@ -635,19 +635,19 @@
     <script>
         (function() {
             const playlist = [
-		{ file: 'https://defqon-1.com/music/Electric Hearts.mp3	', name: 'Electric Hearts', artist: 'Hardopera' },
-        { file: 'https://defqon-1.com/music/City Lights.mp3', name: 'City Lights', artist: 'Hardopera' },
-        { file: 'https://defqon-1.com/music/Digital Fantasy.mp3', name: 'Digital Fantasy', artist: 'Hardopera' },
-        { file: 'https://defqon-1.com/music/Electric Aurora.mp3', name: 'Electric Aurora', artist: 'Hardopera' },
-		{ file: 'https://defqon-1.com/music/Breaking the Night.mp3', name: 'Breaking the Night', artist: 'Hardopera' },
-        { file: 'https://defqon-1.com/music/Electric Pulse.mp3', name: 'Electric Pulse', artist: 'Hardopera' }
+                { file: 'https://defqon-1.com/music/Electric Hearts.mp3', name: 'Electric Hearts', artist: 'Hardopera' },
+                { file: 'https://defqon-1.com/music/City Lights.mp3', name: 'City Lights', artist: 'Hardopera' },
+                { file: 'https://defqon-1.com/music/Digital Fantasy.mp3', name: 'Digital Fantasy', artist: 'Hardopera' },
+                { file: 'https://defqon-1.com/music/Electric Aurora.mp3', name: 'Electric Aurora', artist: 'Hardopera' },
+                { file: 'https://defqon-1.com/music/Breaking the Night.mp3', name: 'Breaking the Night', artist: 'Hardopera' },
+                { file: 'https://defqon-1.com/music/Electric Pulse.mp3', name: 'Electric Pulse', artist: 'Hardopera' }
             ];
 
             let currentIndex = 0;
             let isPlaying = false;
             let isMuted = false;
             let volume = 0.7;
-            let playMode = 'sequential'; // 'sequential' | 'shuffle' | 'repeat-one'
+            let playMode = 'sequential';
             let shuffleQueue = [];
             const audio = new Audio();
 
@@ -678,12 +678,19 @@
                 trackNameEl.textContent = playlist[index].name;
                 trackArtistEl.textContent = playlist[index].artist;
                 updatePlaylistUI();
-                if (isPlaying) audio.play().catch(() => {});
             }
 
             function togglePlay() {
-                if (isPlaying) { audio.pause(); isPlaying = false; }
-                else { audio.play().then(() => { isPlaying = true; }).catch(() => { isPlaying = false; }); }
+                if (isPlaying) {
+                    audio.pause();
+                    isPlaying = false;
+                } else {
+                    audio.play().then(() => {
+                        isPlaying = true;
+                    }).catch(() => {
+                        isPlaying = false;
+                    });
+                }
                 updatePlayBtn();
             }
 
@@ -693,24 +700,38 @@
 
             function nextTrack() {
                 if (playMode === 'repeat-one') {
-                    loadTrack(currentIndex);
-                    if (isPlaying) audio.play().catch(() => {});
+                    audio.currentTime = 0;
+                    audio.play().catch(() => {});
                     return;
                 }
                 if (playMode === 'shuffle') {
                     if (shuffleQueue.length === 0) buildShuffleQueue();
-                    currentIndex = shuffleQueue.shift();
+                    if (shuffleQueue.length > 0) {
+                        currentIndex = shuffleQueue.shift();
+                    } else {
+                        currentIndex = (currentIndex + 1) % playlist.length;
+                    }
                 } else {
                     currentIndex = (currentIndex + 1) % playlist.length;
                 }
                 loadTrack(currentIndex);
-                if (isPlaying) audio.play().catch(() => {});
+                if (!isPlaying) {
+                    isPlaying = true;
+                    updatePlayBtn();
+                }
+                audio.play().catch(() => {
+                    isPlaying = false;
+                    updatePlayBtn();
+                });
             }
 
             function prevTrack() {
                 if (playMode === 'shuffle') {
                     if (shuffleQueue.length === 0) buildShuffleQueue();
                     currentIndex = shuffleQueue.pop();
+                    if (currentIndex === undefined) {
+                        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+                    }
                 } else {
                     currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
                 }
@@ -729,9 +750,11 @@
             function setPlayMode(mode) {
                 playMode = mode;
                 modeBtns.forEach(b => b.classList.remove('active'));
-                document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+                const activeBtn = document.querySelector(`.mode-btn[data-mode="${mode}"]`);
+                if (activeBtn) activeBtn.classList.add('active');
                 loopBtn.style.color = mode === 'repeat-one' ? '#ff3060' : 'rgba(255,255,255,0.45)';
                 shuffleBtn.style.color = mode === 'shuffle' ? '#ff3060' : 'rgba(255,255,255,0.45)';
+                if (mode === 'shuffle') buildShuffleQueue();
             }
 
             function formatTime(s) {
