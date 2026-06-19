@@ -159,7 +159,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 10px;
       flex-wrap: wrap;
       background: rgba(10, 8, 15, 0.75);
       backdrop-filter: blur(25px);
@@ -167,7 +167,7 @@
       border-radius: 60px;
       padding: 12px 28px;
       margin: 0 auto 1.5rem;
-      max-width: 720px;
+      max-width: 750px;
       border: 1px solid rgba(255, 40, 80, 0.15);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
@@ -187,6 +187,7 @@
       height: 34px;
       border-radius: 50%;
       flex-shrink: 0;
+      position: relative;
     }
 
     .player-btn:hover {
@@ -213,13 +214,29 @@
       color: #fff;
     }
 
+    .mode-icon {
+      font-size: 0.85rem;
+      width: 28px;
+      height: 28px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .mode-icon.active {
+      color: #ff3060;
+    }
+
+    .mode-icon:hover {
+      color: #ff3060;
+      background: rgba(255, 30, 70, 0.1);
+    }
+
     .track-info {
       font-size: 0.78rem;
       color: rgba(255, 255, 255, 0.85);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 150px;
+      max-width: 140px;
       font-weight: 500;
       letter-spacing: 0.04em;
       flex-shrink: 1;
@@ -236,8 +253,8 @@
 
     .progress-wrap {
       flex: 1;
-      min-width: 70px;
-      max-width: 240px;
+      min-width: 60px;
+      max-width: 220px;
       height: 5px;
       background: rgba(255, 255, 255, 0.06);
       border-radius: 10px;
@@ -465,7 +482,6 @@
       filter: drop-shadow(0 0 8px #ff2050);
     }
 
-    /* 商品网格 - 响应式 */
     .category-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -579,7 +595,6 @@
       border-radius: 10px;
     }
 
-    /* 信息区块 - 响应式 */
     .festival-info {
       display: flex;
       flex-wrap: wrap;
@@ -605,7 +620,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-		margin-top: 1.6rem;
+      margin-top: 1.6rem;
       margin-bottom: 1rem;
     }
 
@@ -694,18 +709,18 @@
       }
       .inline-player {
         gap: 6px;
-        padding: 8px 14px;
+        padding: 8px 12px;
         border-radius: 40px;
       }
       .track-info {
-        max-width: 70px;
+        max-width: 60px;
         font-size: 0.65rem;
       }
       .volume-slider-mac {
-        width: 35px;
+        width: 30px;
       }
       .progress-wrap {
-        min-width: 35px;
+        min-width: 30px;
       }
       .player-btn {
         width: 28px;
@@ -717,20 +732,10 @@
         height: 36px;
         font-size: 1rem;
       }
-    }
-
-    @media (min-width: 481px) and (max-width: 768px) {
-      .category-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .image-row.double img {
-        min-width: 200px;
-      }
-    }
-
-    @media (min-width: 769px) and (max-width: 1024px) {
-      .category-grid {
-        grid-template-columns: repeat(4, 1fr);
+      .mode-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
       }
     }
   </style>
@@ -749,6 +754,9 @@
         <button class="player-btn" id="prevBtn" title="Previous"><i class="fas fa-backward-step"></i></button>
         <button class="player-btn play-btn" id="playBtn" title="Play/Pause"><i class="fas fa-play"></i></button>
         <button class="player-btn" id="nextBtn" title="Next"><i class="fas fa-forward-step"></i></button>
+        <button class="player-btn mode-icon active" id="sequentialBtn" data-mode="sequential" title="Sequential"><i class="fas fa-list-ol"></i></button>
+        <button class="player-btn mode-icon" id="shuffleBtn" data-mode="shuffle" title="Shuffle"><i class="fas fa-shuffle"></i></button>
+        <button class="player-btn mode-icon" id="repeatOneBtn" data-mode="repeat-one" title="Repeat One"><i class="fas fa-repeat"></i></button>
         <span class="track-info" id="trackLabel" title="Click to open music page">Electric Hearts</span>
         <div class="progress-wrap" id="progressWrap">
           <div class="progress-fill" id="progressFill"></div>
@@ -812,8 +820,8 @@
 Every year, over 100,000 tribe members travel to the sacred grounds from more than 110 countries across the globe to unite under one flag of harder dance music: hardstyle, rawstyle, hardcore, hard dance and all its subgenres.<br />
 The World of Defqon.1 features multiple massive stages, iconic Power Hour sets, the legendary closing Endshow fireworks, camping villages, unique tribal culture and a fully immersive weekend experience. The festival stands for unity, freedom and belonging for every harder styles fan, known together as The Tribe.<br />
 International editions of Defqon.1 were previously held in Australia (2009–2018) and Chile, before being put on indefinite hiatus due to venue and operational challenges. Each year a unique theme and official festival anthem are created to represent the spirit of that edition.</p>
-			<p></p>	 
-		  <h2 align="center"><a href="https://www.q-dance.com/en/events/defqon-1/" target="_blank" rel="noopener">The Path – The Full History of Defqon.1</a></h2>
+      <p></p>   
+      <h2 align="center"><a href="https://www.q-dance.com/en/events/defqon-1/" target="_blank" rel="noopener">The Path – The Full History of Defqon.1</a></h2>
 <p>The Path tells the complete legacy of Defqon.1, tracing every milestone from its birth in 2003 up to today's multi-day tribal festival.<br />2003: The very first Defqon.1 lands at Almeerderstrand, Almere. A single-day outdoor event with one main stage, welcoming thousands of early hardstyle fans. The Prophet delivered the debut festival anthem <em>Emergency Call</em>.<br />2003–2010: The festival stays a one-day summer event in Almere, expanding lineups, adding secondary stages and releasing a new official anthem each year by leading harder styles producers including Headhunterz, Showtek and Brennan Heart.<br />2011: A defining turning point. Defqon.1 relocates permanently to Biddinghuizen, next to Walibi Holland theme park, and transforms into a 3-day weekend camping festival, introducing overnight camping, more stages and the first official Power Hour concept.<br />2009–2018: Defqon.1 Australia runs annually in Sydney, building a massive Southern Hemisphere harder styles community. Chile editions launch in the 2010s to serve South American fans.<br />2020–2021: Physical live events paused globally due to pandemic restrictions; Q-dance hosted online digital editions named Defqon.1 At Home to keep the tribe connected virtually.<br />2022–Present: Defqon.1 expands to a full four-day format (Thursday The Gathering to Sunday Endshow), drawing record crowds of over 100,000 visitors annually. New themed zones, stage designs and annual anthems continue to reimagine the World of Defqon.1, while The Tribe culture remains the core heart of the festival.<br />The Path also exists as a digital feature inside the official Defqon.1 mobile app: fans complete quests, earn XP, unlock ranks (Challenger, Warrior, Legend) and collect badges marking their own personal Defqon.1 journey.</p> 
         </div>
     </div>
@@ -899,7 +907,6 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 32, 32);
       return new THREE.CanvasTexture(c);
-
     }
 
     const flow1 = createFlowParticles(2000, '#ff2050', '#ff0060', 2.8, 4.5);
@@ -999,6 +1006,8 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       let isPlaying = false;
       let isMuted = false;
       let volume = 0.7;
+      let playMode = 'sequential';
+      let shuffleQueue = [];
       const audio = new Audio();
 
       const playBtn = document.getElementById('playBtn');
@@ -1015,6 +1024,10 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       const volumeScrubberMac = document.getElementById('volumeScrubberMac');
       const playlistToggle = document.getElementById('playlistToggle');
       const playlistMenu = document.getElementById('playlistMenu');
+      const sequentialBtn = document.getElementById('sequentialBtn');
+      const shuffleBtn = document.getElementById('shuffleBtn');
+      const repeatOneBtn = document.getElementById('repeatOneBtn');
+      const modeIcons = [sequentialBtn, shuffleBtn, repeatOneBtn];
 
       audio.volume = volume;
 
@@ -1024,9 +1037,6 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         trackLabel.textContent = playlist[index].name;
         trackLabel.title = 'Click to open music page: ' + playlist[index].name;
         updatePlaylistActive();
-        if (isPlaying) {
-          audio.play().catch(() => {});
-        }
       }
 
       function togglePlay() {
@@ -1048,7 +1058,21 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       }
 
       function nextTrack() {
-        currentIndex = (currentIndex + 1) % playlist.length;
+        if (playMode === 'repeat-one') {
+          audio.currentTime = 0;
+          audio.play().catch(() => {});
+          return;
+        }
+        if (playMode === 'shuffle') {
+          if (shuffleQueue.length === 0) buildShuffleQueue();
+          if (shuffleQueue.length > 0) {
+            currentIndex = shuffleQueue.shift();
+          } else {
+            currentIndex = (currentIndex + 1) % playlist.length;
+          }
+        } else {
+          currentIndex = (currentIndex + 1) % playlist.length;
+        }
         loadTrack(currentIndex);
         if (!isPlaying) {
           isPlaying = true;
@@ -1061,9 +1085,35 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       }
 
       function prevTrack() {
-        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        if (playMode === 'shuffle') {
+          if (shuffleQueue.length === 0) buildShuffleQueue();
+          const prev = shuffleQueue.pop();
+          if (prev !== undefined) {
+            currentIndex = prev;
+          } else {
+            currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+          }
+        } else {
+          currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        }
         loadTrack(currentIndex);
         if (isPlaying) audio.play().catch(() => {});
+      }
+
+      function buildShuffleQueue() {
+        shuffleQueue = [...Array(playlist.length).keys()].filter(i => i !== currentIndex);
+        for (let i = shuffleQueue.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffleQueue[i], shuffleQueue[j]] = [shuffleQueue[j], shuffleQueue[i]];
+        }
+      }
+
+      function setPlayMode(mode) {
+        playMode = mode;
+        modeIcons.forEach(b => b.classList.remove('active'));
+        const activeBtn = document.getElementById(mode === 'sequential' ? 'sequentialBtn' : mode === 'shuffle' ? 'shuffleBtn' : 'repeatOneBtn');
+        if (activeBtn) activeBtn.classList.add('active');
+        if (mode === 'shuffle') buildShuffleQueue();
       }
 
       function formatTime(s) {
@@ -1142,6 +1192,10 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       nextBtn.addEventListener('click', nextTrack);
       muteBtn.addEventListener('click', toggleMute);
 
+      sequentialBtn.addEventListener('click', () => setPlayMode('sequential'));
+      shuffleBtn.addEventListener('click', () => setPlayMode('shuffle'));
+      repeatOneBtn.addEventListener('click', () => setPlayMode('repeat-one'));
+
       let dragProgress = false;
       progressWrap.addEventListener('mousedown', (e) => { dragProgress = true; progressWrap.classList.add('dragging'); setProgress(e); });
       window.addEventListener('mousemove', (e) => { if (dragProgress) setProgress(e); });
@@ -1174,6 +1228,7 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         loadTrack(0);
         updateVolumeDisplay();
         updatePlayBtn();
+        setPlayMode('sequential');
       }
       init();
     })();
