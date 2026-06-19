@@ -226,6 +226,13 @@
       flex-shrink: 1;
       min-width: 55px;
       text-align: center;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .track-info:hover {
+      color: #ff3060;
+      text-decoration: underline;
     }
 
     /* === 进度条 - 深色风格 === */
@@ -386,7 +393,6 @@
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
     }
 
-    /* === 播放列表滚动条 - 深色风格 === */
     .playlist-menu::-webkit-scrollbar {
       width: 5px;
     }
@@ -400,14 +406,12 @@
     .playlist-menu::-webkit-scrollbar-thumb {
       background: rgba(255, 40, 80, 0.3);
       border-radius: 10px;
-      transition: background 0.2s;
     }
 
     .playlist-menu::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 40, 80, 0.5);
     }
 
-    /* Firefox 滚动条 */
     .playlist-menu {
       scrollbar-width: thin;
       scrollbar-color: rgba(255, 40, 80, 0.3) rgba(255, 255, 255, 0.03);
@@ -633,63 +637,6 @@
       font-size: clamp(0.85rem, 1.8vw, 1.05rem);
     }
 
-    .countries {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-      margin-top: 1.2rem;
-    }
-
-    .country-badge {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 0.5rem 1.2rem;
-      border-radius: 50px;
-      font-weight: 500;
-      font-size: clamp(0.7rem, 1.5vw, 0.9rem);
-      letter-spacing: 0.1em;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #ccc;
-    }
-
-    .email-box {
-      flex: 1 1 220px;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(25px);
-      border-radius: 30px;
-      padding: 1.8rem 1.5rem;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .email-box i {
-      font-size: clamp(1.8rem, 3vw, 2.2rem);
-      color: #ff2050;
-      margin-bottom: 0.8rem;
-    }
-
-    .email-box p {
-      font-size: clamp(0.75rem, 1.5vw, 0.9rem);
-    }
-
-    .email-address {
-      font-size: clamp(0.85rem, 2vw, 1.2rem);
-      font-weight: 600;
-      color: #00c8ff;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 0.7rem 1.2rem;
-      border-radius: 50px;
-      margin: 0.8rem 0;
-      cursor: pointer;
-      letter-spacing: 0.1em;
-      transition: 0.3s;
-      word-break: break-all;
-    }
-
-    .email-address:hover {
-      background: rgba(255, 20, 80, 0.2);
-      color: #fff;
-    }
-
     .footer {
       text-align: center;
       padding: 1.5rem 0;
@@ -739,9 +686,6 @@
         padding: 1.5rem 1rem;
         gap: 1.5rem;
         border-radius: 25px;
-      }
-      .email-box {
-        padding: 1.5rem 1rem;
       }
       .main-logo {
         letter-spacing: 0.03em;
@@ -811,7 +755,7 @@
         <button class="player-btn" id="prevBtn" title="Previous"><i class="fas fa-backward-step"></i></button>
         <button class="player-btn play-btn" id="playBtn" title="Play/Pause"><i class="fas fa-play"></i></button>
         <button class="player-btn" id="nextBtn" title="Next"><i class="fas fa-forward-step"></i></button>
-        <span class="track-info" id="trackLabel">Defqon.1 Anthem</span>
+        <span class="track-info" id="trackLabel" title="Click to open music page">Defqon.1 Anthem</span>
         <div class="progress-wrap" id="progressWrap">
           <div class="progress-fill" id="progressFill"></div>
           <div class="progress-scrubber" id="progressScrubber"></div>
@@ -830,7 +774,7 @@
         </div>
       </div>
 
-      <div class="email-box">
+      <div class="email-box" style="background:rgba(0,0,0,0.4); backdrop-filter:blur(25px); border-radius:30px; padding:1rem 2rem; text-align:center; border:1px solid rgba(255,255,255,0.1); margin-bottom:1.5rem; display:inline-block;">
         <p style="color:#ccc; letter-spacing:0.1em;">The new website is coming soon, Stay tuned! Recommend info to us: <a href="mailto:z58@outlook.com">z58@outlook.com</a></p>
       </div>
       <div class="slogan">
@@ -961,6 +905,7 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 32, 32);
       return new THREE.CanvasTexture(c);
+
     }
 
     const flow1 = createFlowParticles(2000, '#ff2050', '#ff0060', 2.8, 4.5);
@@ -1049,12 +994,12 @@ International editions of Defqon.1 were previously held in Australia (2009–201
   <script>
     (function() {
       const playlist = [
-        { file: 'music/Breaking the Night.mp3', name: 'Breaking the Night', artist: 'Hardopera' },
-        { file: 'music/City Lights.mp3', name: 'City Lights', artist: 'Hardopera' },
-        { file: 'music/Digital Fantasy.mp3', name: 'Digital Fantasy', artist: 'Hardopera' },
-        { file: 'music/Electric Aurora.mp3', name: 'Electric Aurora', artist: 'Hardopera' },
-        { file: 'music/Electric Hearts.mp3', name: 'Electric Hearts', artist: 'Hardopera' },
-        { file: 'music/Electric Pulse.mp3', name: 'Electric Pulse', artist: 'Hardopera' }
+        { file: 'music/1.mp3', name: 'Defqon-1-1', artist: 'Hardopera' },
+        { file: 'music/2.mp3', name: 'Defqon-1-2', artist: 'Hardopera' },
+        { file: 'music/3.mp3', name: 'Defqon-1-3', artist: 'Hardopera' },
+        { file: 'music/4.mp3', name: 'Defqon-1-4', artist: 'Hardopera' },
+        { file: 'music/5.mp3', name: 'Defqon-1-5', artist: 'Hardopera' },
+        { file: 'music/6.mp3', name: 'Defqon-1-6', artist: 'Hardopera' }
       ];
 
       let currentIndex = 0;
@@ -1084,6 +1029,7 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         currentIndex = index;
         audio.src = playlist[index].file;
         trackLabel.textContent = playlist[index].name;
+        trackLabel.title = 'Click to open music page: ' + playlist[index].name;
         updatePlaylistActive();
         if (isPlaying) audio.play().catch(() => {});
       }
@@ -1167,6 +1113,11 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         const items = playlistMenu.querySelectorAll('.playlist-track');
         items.forEach((el, i) => el.classList.toggle('active', i === currentIndex));
       }
+
+      // 点击歌曲名字打开 music.html
+      trackLabel.addEventListener('click', () => {
+        window.open('music.html', '_blank');
+      });
 
       playBtn.addEventListener('click', togglePlay);
       prevBtn.addEventListener('click', prevTrack);
