@@ -745,12 +745,11 @@
       <h1 class="main-logo">Defqon-1.com</h1>
       <div class="sub-logo">FESTIVAL SOUVENIRS</div>
 
-      <!-- ========== 单排内嵌播放器 ========== -->
       <div class="inline-player" id="inlinePlayer">
         <button class="player-btn" id="prevBtn" title="Previous"><i class="fas fa-backward-step"></i></button>
         <button class="player-btn play-btn" id="playBtn" title="Play/Pause"><i class="fas fa-play"></i></button>
         <button class="player-btn" id="nextBtn" title="Next"><i class="fas fa-forward-step"></i></button>
-        <span class="track-info" id="trackLabel" title="Click to open music page">Defqon.1 Anthem</span>
+        <span class="track-info" id="trackLabel" title="Click to open music page">Electric Hearts</span>
         <div class="progress-wrap" id="progressWrap">
           <div class="progress-fill" id="progressFill"></div>
           <div class="progress-scrubber" id="progressScrubber"></div>
@@ -985,15 +984,14 @@ International editions of Defqon.1 were previously held in Australia (2009–201
     });
   </script>
 
-  <!-- ========== 播放器逻辑 ========== -->
   <script>
     (function() {
       const playlist = [
-		{ file: 'https://defqon-1.com/music/Electric Hearts.mp3	', name: 'Electric Hearts', artist: 'Hardopera' },
+        { file: 'https://defqon-1.com/music/Electric Hearts.mp3', name: 'Electric Hearts', artist: 'Hardopera' },
         { file: 'https://defqon-1.com/music/City Lights.mp3', name: 'City Lights', artist: 'Hardopera' },
         { file: 'https://defqon-1.com/music/Digital Fantasy.mp3', name: 'Digital Fantasy', artist: 'Hardopera' },
         { file: 'https://defqon-1.com/music/Electric Aurora.mp3', name: 'Electric Aurora', artist: 'Hardopera' },
-		{ file: 'https://defqon-1.com/music/Breaking the Night.mp3', name: 'Breaking the Night', artist: 'Hardopera' },
+        { file: 'https://defqon-1.com/music/Breaking the Night.mp3', name: 'Breaking the Night', artist: 'Hardopera' },
         { file: 'https://defqon-1.com/music/Electric Pulse.mp3', name: 'Electric Pulse', artist: 'Hardopera' }
       ];
 
@@ -1026,12 +1024,22 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         trackLabel.textContent = playlist[index].name;
         trackLabel.title = 'Click to open music page: ' + playlist[index].name;
         updatePlaylistActive();
-        if (isPlaying) audio.play().catch(() => {});
+        if (isPlaying) {
+          audio.play().catch(() => {});
+        }
       }
 
       function togglePlay() {
-        if (isPlaying) { audio.pause(); isPlaying = false; }
-        else { audio.play().then(() => { isPlaying = true; }).catch(() => { isPlaying = false; }); }
+        if (isPlaying) {
+          audio.pause();
+          isPlaying = false;
+        } else {
+          audio.play().then(() => {
+            isPlaying = true;
+          }).catch(() => {
+            isPlaying = false;
+          });
+        }
         updatePlayBtn();
       }
 
@@ -1039,8 +1047,24 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         playBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
       }
 
-      function nextTrack() { currentIndex = (currentIndex + 1) % playlist.length; loadTrack(currentIndex); if (isPlaying) audio.play().catch(() => {}); }
-      function prevTrack() { currentIndex = (currentIndex - 1 + playlist.length) % playlist.length; loadTrack(currentIndex); if (isPlaying) audio.play().catch(() => {}); }
+      function nextTrack() {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        loadTrack(currentIndex);
+        if (!isPlaying) {
+          isPlaying = true;
+          updatePlayBtn();
+        }
+        audio.play().catch(() => {
+          isPlaying = false;
+          updatePlayBtn();
+        });
+      }
+
+      function prevTrack() {
+        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        loadTrack(currentIndex);
+        if (isPlaying) audio.play().catch(() => {});
+      }
 
       function formatTime(s) {
         if (isNaN(s) || !isFinite(s)) return '0:00';
@@ -1109,7 +1133,6 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         items.forEach((el, i) => el.classList.toggle('active', i === currentIndex));
       }
 
-      // 点击歌曲名字打开 music.html
       trackLabel.addEventListener('click', () => {
         window.open('music/index.html', '_blank');
       });
@@ -1119,7 +1142,6 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       nextBtn.addEventListener('click', nextTrack);
       muteBtn.addEventListener('click', toggleMute);
 
-      // 进度条拖拽
       let dragProgress = false;
       progressWrap.addEventListener('mousedown', (e) => { dragProgress = true; progressWrap.classList.add('dragging'); setProgress(e); });
       window.addEventListener('mousemove', (e) => { if (dragProgress) setProgress(e); });
@@ -1129,7 +1151,6 @@ International editions of Defqon.1 were previously held in Australia (2009–201
       window.addEventListener('touchmove', (e) => { if (dragProgress) setProgress(e.touches[0]); });
       window.addEventListener('touchend', () => { dragProgress = false; progressWrap.classList.remove('dragging'); });
 
-      // 音量拖拽
       let dragVolume = false;
       volumeSliderMac.addEventListener('mousedown', (e) => { dragVolume = true; volumeSliderMac.classList.add('dragging'); setVolume(e); });
       window.addEventListener('mousemove', (e) => { if (dragVolume) setVolume(e); });
@@ -1153,7 +1174,6 @@ International editions of Defqon.1 were previously held in Australia (2009–201
         loadTrack(0);
         updateVolumeDisplay();
         updatePlayBtn();
-        audio.play().then(() => { isPlaying = true; updatePlayBtn(); }).catch(() => {});
       }
       init();
     })();
