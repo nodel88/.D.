@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover, shrink-to-fit=no">
+  <title>Defqon-1.com · Festival Souvenirs</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0f' rx='15'/%3E%3Ctext x='50' y='54' text-anchor='middle' dominant-baseline='middle' font-size='72' font-weight='900' fill='%23ffffff' font-family='Arial'%3ED%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; font-family: 'Montserrat', sans-serif; color: #fff; overflow-x: hidden; min-height: 100vh; }
+    #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+    .container { max-width: 900px; margin: 0 auto; padding: 1rem; position: relative; z-index: 10; text-align: center; }
+    .main-logo { font-size: clamp(2rem, 6vw, 4rem); font-weight: 900; color: #fff; text-shadow: 0 0 30px rgba(255,20,80,0.8); animation: glitch 3s infinite; margin: 1rem 0; }
+    @keyframes glitch { 0%,90%,100%{text-shadow:0 0 30px rgba(255,20,80,0.8),0.1em 0 0 rgba(0,200,255,0.4),-0.1em 0 0 rgba(255,0,50,0.4)} 92%{text-shadow:0 0 30px rgba(255,20,80,0.8),-0.2em 0 0 rgba(0,200,255,0.6),0.15em 0 0 rgba(255,0,50,0.5)} 94%{text-shadow:0 0 30px rgba(255,20,80,0.8),0.15em 0 0 rgba(0,200,255,0.5),-0.08em 0 0 rgba(255,0,50,0.6)} }
+    
+    .player-bar { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; background: rgba(10,8,15,0.8); backdrop-filter: blur(25px); border-radius: 50px; padding: 10px 20px; margin: 0 auto 1rem; max-width: 650px; border: 1px solid rgba(255,40,80,0.2); }
+    .p-btn { background: none; border: none; color: rgba(255,255,255,0.7); font-size: 1rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+    .p-btn:hover { color: #ff3060; background: rgba(255,30,70,0.15); }
+    .p-btn.play-btn { width: 40px; height: 40px; font-size: 1.1rem; background: rgba(255,30,70,0.2); color: #ff3060; border: 1.5px solid rgba(255,50,80,0.3); }
+    .track-name { font-size: 0.75rem; color: rgba(255,255,255,0.85); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+    .prog-bar { flex: 1; min-width: 50px; max-width: 150px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 5px; cursor: pointer; position: relative; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg, #ff2850, #ff5070); border-radius: 5px; width: 0%; }
+    .time { font-size: 0.6rem; color: rgba(255,255,255,0.4); min-width: 30px; }
+    .vol-wrap { display: flex; align-items: center; gap: 4px; }
+    .vol-bar { width: 40px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 5px; cursor: pointer; }
+    .vol-fill { height: 100%; background: #ff2850; border-radius: 5px; width: 70%; }
+
+    .fx-section { margin: 0.5rem auto; max-width: 650px; }
+    .fx-label { font-size: 0.6rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; margin-bottom: 4px; }
+    .fx-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-bottom: 8px; }
+    .fx-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); font-size: 0.65rem; cursor: pointer; padding: 5px 8px; border-radius: 15px; transition: all 0.2s; letter-spacing: 0.05em; white-space: nowrap; }
+    .fx-btn:hover { color: #ff3060; border-color: rgba(255,40,80,0.3); background: rgba(255,30,70,0.08); }
+    .fx-btn.active { color: #ff3060; border-color: rgba(255,40,80,0.5); background: rgba(255,30,70,0.12); box-shadow: 0 0 10px rgba(255,20,60,0.2); }
+
+    .hideable { transition: opacity 0.4s; }
+    .pure-mode .hideable { opacity: 0; pointer-events: none; max-height: 0; overflow: hidden; margin: 0; padding: 0; }
+    .pure-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .pure-btn:hover { color: #ff3060; }
+    .pure-btn.active { color: #ff3060; background: rgba(255,30,70,0.12); }
+
+    @media (max-width: 480px) {
+      .player-bar { gap: 4px; padding: 8px 12px; }
+      .p-btn { width: 26px; height: 26px; font-size: 0.8rem; }
+      .p-btn.play-btn { width: 34px; height: 34px; }
+      .fx-btn { font-size: 0.55rem; padding: 3px 6px; border-radius: 12px; }
+    }
+  </style>
+</head>
+<body class="">
+  <canvas id="bg-canvas"></canvas>
+  <div class="container" id="mainContainer">
+    <h1 class="main-logo">DEFQON-1.COM</h1>
+    
+    <div class="player-bar" id="playerBar">
+      <button class="p-btn" id="prevBtn"><i class="fas fa-backward-step"></i></button>
+      <button class="p-btn play-btn" id="playBtn"><i class="fas fa-play"></i></button>
+      <button class="p-btn" id="nextBtn"><i class="fas fa-forward-step"></i></button>
+      <span class="track-name" id="trackLabel">Electric Hearts</span>
+      <div class="prog-bar" id="progWrap"><div class="prog-fill" id="progFill"></div></div>
+      <span class="time" id="timeLabel">0:00</span>
+      <div class="vol-wrap">
+        <button class="p-btn" id="muteBtn"><i class="fas fa-volume-up"></i></button>
+        <div class="vol-bar" id="volBar"><div class="vol-fill" id="volFill"></div></div>
+      </div>
+      <button class="pure-btn" id="pureBtn" title="Pure Mode"><i class="fas fa-expand"></i></button>
+    </div>
+
+    <div class="fx-section hideable">
+      <div class="fx-label">PARTICLE FX</div>
+      <div class="fx-grid" id="particleFxGrid">
+        <button class="fx-btn active" data-fx="0">Explosion</button>
+        <button class="fx-btn" data-fx="1">Spiral</button>
+        <button class="fx-btn" data-fx="2">Wave</button>
+        <button class="fx-btn" data-fx="3">Tunnel</button>
+        <button class="fx-btn" data-fx="4">Galaxy</button>
+        <button class="fx-btn" data-fx="5">Pulse</button>
+        <button class="fx-btn" data-fx="6">Fireflies</button>
+        <button class="fx-btn" data-fx="7">Matrix</button>
+        <button class="fx-btn" data-fx="8">Vortex</button>
+        <button class="fx-btn" data-fx="9">Ripple</button>
+        <button class="fx-btn" data-fx="10">Shatter</button>
+        <button class="fx-btn" data-fx="11">Orbit</button>
+        <button class="fx-btn" data-fx="12">Neon</button>
+        <button class="fx-btn" data-fx="13">Glitch</button>
+        <button class="fx-btn" data-fx="14">Kaleidoscope</button>
+        <button class="fx-btn" data-fx="15">Storm</button>
+        <button class="fx-btn" data-fx="16">DNA</button>
+        <button class="fx-btn" data-fx="17">Bubble</button>
+        <button class="fx-btn" data-fx="18">Lightning</button>
+        <button class="fx-btn" data-fx="19">Warp</button>
+      </div>
+      <div class="fx-label">LINE VISUALIZER</div>
+      <div class="fx-grid" id="lineFxGrid">
+        <button class="fx-btn active" data-line="0">Spectrum</button>
+        <button class="fx-btn" data-line="1">Circular</button>
+        <button class="fx-btn" data-line="2">Radial</button>
+        <button class="fx-btn" data-line="3">Waveform</button>
+        <button class="fx-btn" data-line="4">Bar Graph</button>
+        <button class="fx-btn" data-line="5">Ring Pulse</button>
+        <button class="fx-btn" data-line="6">Double Helix</button>
+        <button class="fx-btn" data-line="7">Grid</button>
+        <button class="fx-btn" data-line="8">Starburst</button>
+        <button class="fx-btn" data-line="9">Ribbon</button>
+        <button class="fx-btn" data-line="10">Polygon</button>
+        <button class="fx-btn" data-line="11">Frequency Ring</button>
+        <button class="fx-btn" data-line="12">Particle Wave</button>
+        <button class="fx-btn" data-line="13">Torus Knot</button>
+        <button class="fx-btn" data-line="14">Mirror</button>
+        <button class="fx-btn" data-line="15">Spider</button>
+        <button class="fx-btn" data-line="16">Crystal</button>
+        <button class="fx-btn" data-line="17">Laser</button>
+        <button class="fx-btn" data-line="18">Flame</button>
+        <button class="fx-btn" data-line="19">Infinity</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="importmap">
+    { "imports": { "three": "https://unpkg.com/three@0.126.0/build/three.module.js" } }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    
+    const canvas = document.getElementById('bg-canvas');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020210);
+    const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+    camera.position.set(0, 0.5, 5); camera.lookAt(0, 0, 0);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+    let currentParticleFx = 0, currentLineFx = 0;
+    let particleGroup = new THREE.Group(), lineGroup = new THREE.Group();
+    scene.add(particleGroup); scene.add(lineGroup);
+    
+    let audioAnalyser = null, audioCtx = null, freqData = null;
+    let bass = 0, mid = 0, treb = 0, beat = 0, beatDecay = 0, lastBeat = 0;
+
+    function getAudioData() {
+      if (!audioAnalyser || !freqData) return { bass: 0, mid: 0, treb: 0, beat: 0, spectrum: [] };
+      audioAnalyser.getByteFrequencyData(freqData);
+      let b = 0, m = 0, t = 0;
+      const spectrum = [];
+      for (let i = 0; i < 40; i++) { b += freqData[i]; spectrum.push(freqData[i]); }
+      for (let i = 40; i < 120; i++) { m += freqData[i]; spectrum.push(freqData[i]); }
+      for (let i = 120; i < 256; i++) { t += freqData[i]; spectrum.push(freqData[i]); }
+      b = b / 40 / 255; m = m / 80 / 255; t = t / 136 / 255;
+      const be = b > 0.5 ? (b - 0.5) * 3 : 0;
+      return { bass: b, mid: m, treb: t, beat: be, spectrum };
+    }
+
+    function createGlowTex(color1 = '#fff', color2 = '#f64', color3 = '#a00') {
+      const c = document.createElement('canvas'); c.width = 32; c.height = 32;
+      const ctx = c.getContext('2d');
+      const g = ctx.createRadialGradient(16,16,0,16,16,16);
+      g.addColorStop(0, color1); g.addColorStop(0.3, color2); g.addColorStop(0.7, color3); g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g; ctx.fillRect(0,0,32,32);
+      return new THREE.CanvasTexture(c);
+    }
+
+    function getMusicColor(freqValue, intensity) {
+      const hue = 0.95 - freqValue * 0.6;
+      const saturation = 0.8 + intensity * 0.2;
+      const lightness = 0.4 + intensity * 0.3;
+      return new THREE.Color().setHSL(hue % 1, Math.min(1, saturation), Math.min(0.8, lightness));
+    }
+
+    // ========== PARTICLE SYSTEM ==========
+    function initParticles() {
+      while(particleGroup.children.length > 0) {
+        particleGroup.remove(particleGroup.children[0]);
+      }
+      
+      const layers = [
+        { count: 1200, color1: '#ff2050', color2: '#ff0060', spread: 3.5, size: 0.06 },
+        { count: 800, color1: '#00c8ff', color2: '#0060ff', spread: 3.2, size: 0.05 },
+        { count: 600, color1: '#b000ff', color2: '#ff00a0', spread: 2.8, size: 0.04 },
+        { count: 400, color1: '#ffffff', color2: '#ff80b0', spread: 3.8, size: 0.07 },
+        { count: 500, color1: '#ffaa00', color2: '#ff4400', spread: 3.0, size: 0.04 },
+      ];
+      
+      layers.forEach(layer => {
+        const count = layer.count, spread = layer.spread;
+        const geo = new THREE.BufferGeometry();
+        const pos = new Float32Array(count*3), col = new Float32Array(count*3), base = new Float32Array(count*3);
+        const sparkle = new Float32Array(count), phases = new Float32Array(count), speeds = new Float32Array(count);
+        
+        for (let i = 0; i < count; i++) {
+          const idx = i * 3;
+          const a = Math.random()*Math.PI*2, r = spread*(0.2+Math.random()*0.8), y = (Math.random()-0.5)*4;
+          pos[idx]=base[idx]=Math.cos(a)*r; pos[idx+1]=base[idx+1]=y; pos[idx+2]=base[idx+2]=Math.sin(a)*r;
+          const mc = new THREE.Color(layer.color1).lerp(new THREE.Color(layer.color2), Math.random());
+          col[idx]=mc.r; col[idx+1]=mc.g; col[idx+2]=mc.b;
+          sparkle[i] = Math.random() < 0.2 ? 1 : 0;
+          phases[i] = Math.random() * Math.PI * 2;
+          speeds[i] = 0.5 + Math.random() * 2;
+        }
+        
+        geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+        geo.setAttribute('color', new THREE.BufferAttribute(col,3));
+        
+        const mat = new THREE.PointsMaterial({
+          size: layer.size, map: createGlowTex(), blending: THREE.AdditiveBlending,
+          depthWrite: false, vertexColors: true, transparent: true, opacity: 0.8
+        });
+        
+        const pts = new THREE.Points(geo, mat);
+        pts.userData = { base, count, sparkle, phases, speeds, originalSize: layer.size, spread };
+        particleGroup.add(pts);
+      });
+    }
+
+    function applyParticleFx(t, b, m, tr, be, spectrum) {
+      particleGroup.children.forEach(pts => {
+        const pos = pts.geometry.attributes.position.array;
+        const base = pts.userData.base, count = pts.userData.count;
+        const sparkle = pts.userData.sparkle, phases = pts.userData.phases, speeds = pts.userData.speeds;
+        
+        for (let i = 0; i < count; i++) {
+          const idx = i * 3;
+          const bx = base[idx], by = base[idx+1], bz = base[idx+2];
+          const dist = Math.sqrt(bx*bx+by*by+bz*bz);
+          const phase = phases[i], speed = speeds[i];
+          let x = bx, y = by, z = bz;
+          
+          const freqIndex = Math.floor((dist / 4) * spectrum.length) % spectrum.length;
+          const freqValue = (spectrum[freqIndex] || 128) / 255;
+          
+          const beatScale = 1 + be * (1.5 + Math.random() * 0.5);
+          const bassPulse = 1 + b * (dist < 2 ? 3 : 1.5);
+          const sparkleBoost = sparkle[i] ? (1 + be * 2 + freqValue * 1.5) : 1;
+          
+          switch(currentParticleFx) {
+            case 0: x=bx*bassPulse*beatScale*sparkleBoost; y=by*bassPulse*beatScale*sparkleBoost; z=bz*bassPulse*beatScale*sparkleBoost; if(sparkle[i]&&be>0.7){x+=(Math.random()-0.5)*be*3;y+=(Math.random()-0.5)*be*3;z+=(Math.random()-0.5)*be*3;} break;
+            case 1: const a1=Math.atan2(bz,bx)+t*speed*(1+b); const r1=dist*(1+b*0.5+freqValue*0.3); x=Math.cos(a1)*r1; z=Math.sin(a1)*r1; y+=Math.sin(t*5+dist*2)*0.3*b*(1+freqValue); break;
+            case 2: y+=Math.sin(t*8+bx*3+phase)*0.4*b*(1+freqValue); x+=Math.cos(t*7+bz*3+phase)*0.3*m; z+=Math.sin(t*6+by*3+phase)*0.3*tr; if(sparkle[i]){x+=Math.sin(t*20+phase)*0.2*be;y+=Math.cos(t*18+phase)*0.2*be;} break;
+            case 3: const ta=Math.atan2(bz,bx); const trR=dist*(0.5+0.5*Math.sin(t*3+dist*2+freqValue*5)); x=Math.cos(ta)*trR; z=Math.sin(ta)*trR; y+=Math.cos(t*4+dist+phase)*0.5*b*(1+freqValue); break;
+            case 4: const ga=Math.atan2(bz,bx)+t*0.5*speed; x=Math.cos(ga)*dist*beatScale*(1+freqValue*0.5); z=Math.sin(ga)*dist*beatScale*(1+freqValue*0.5); y=by*beatScale+Math.sin(t*2+dist+phase)*0.5*b; break;
+            case 5: const pu=1+Math.sin(t*15+phase)*0.3*b+be*1.5; x=bx*pu*sparkleBoost; y=by*pu*sparkleBoost; z=bz*pu*sparkleBoost; break;
+            case 6: const fj=(1+freqValue*3); x=bx+Math.sin(t*speed*20+phase)*0.15*tr*fj; y=by+Math.cos(t*speed*18+phase)*0.15*tr*fj; z=bz+Math.sin(t*speed*22+phase)*0.15*tr*fj; if(sparkle[i]){const g=Math.sin(t*10+phase)*0.5+0.5; x*=1+g*be;y*=1+g*be;z*=1+g*be;} break;
+            case 7: y-=t*0.5*(1+b)*speed*2; if(y<-4)y=4; x+=Math.sin(t*10+phase)*0.1*m*(1+freqValue*2); if(sparkle[i]){x+=Math.sin(t*30+phase)*0.3*be;} break;
+            case 8: const va=Math.atan2(bz,bx)+t*speed*(1+b); const vR=dist*(0.3+0.7*Math.abs(Math.sin(t*2+freqValue*4))); x=Math.cos(va)*vR; z=Math.sin(va)*vR; y+=Math.cos(t*5+dist+phase)*0.4*m*(1+freqValue); break;
+            case 9: const rip=Math.sin(dist*3-t*8+freqValue*6)*0.5*b; x=bx+Math.cos(Math.atan2(bz,bx))*rip*sparkleBoost; z=bz+Math.sin(Math.atan2(bz,bx))*rip*sparkleBoost; y+=rip*0.3*sparkleBoost; break;
+            case 10: if(be>0.5){x=bx*(1+be*3*Math.random());y=by*(1+be*3*Math.random());z=bz*(1+be*3*Math.random());} if(sparkle[i]){x+=(Math.random()-0.5)*be*4;y+=(Math.random()-0.5)*be*4;z+=(Math.random()-0.5)*be*4;} break;
+            case 11: const oa=Math.atan2(bz,bx)+t*speed*(1+b); const oR=dist*(1+b*0.3+freqValue*0.2); x=Math.cos(oa)*oR*sparkleBoost; z=Math.sin(oa)*oR*sparkleBoost; y=by+Math.sin(oa*3+phase)*0.5*b; break;
+            case 12: const np=0.5+0.5*Math.sin(t*10+dist*2+freqValue*8); x=bx*(1+np*b*sparkleBoost); y=by*(1+np*m*sparkleBoost); z=bz*(1+np*tr*sparkleBoost); break;
+            case 13: if(be>0.4||Math.random()<freqValue){x=bx+(Math.random()-0.5)*be*2*sparkleBoost;y=by+(Math.random()-0.5)*be*2*sparkleBoost;z=bz+(Math.random()-0.5)*be*2*sparkleBoost;} break;
+            case 14: const ka=Math.atan2(bz,bx); const kR=dist*Math.abs(Math.sin(t*2+ka*3+freqValue*5)); x=Math.cos(ka)*kR*sparkleBoost; z=Math.sin(ka)*kR*sparkleBoost; y=by*Math.cos(t*3+dist+phase)*(1+freqValue); break;
+            case 15: x=bx+Math.sin(t*12+dist+phase)*0.5*b*sparkleBoost; y=by+Math.cos(t*10+dist+phase)*0.5*m*sparkleBoost; z=bz+Math.sin(t*14+dist+phase)*0.5*tr*sparkleBoost; if(sparkle[i]&&be>0.6){const sb=be*2;x+=Math.sin(t*25+phase)*sb;y+=Math.cos(t*20+phase)*sb;z+=Math.sin(t*22+phase)*sb;} break;
+            case 16: const hx=Math.sin(t*4*speed+bx*2+freqValue*3)*0.8*b; x=bx+hx*0.5*sparkleBoost; y=by+hx*sparkleBoost; z=bz+Math.cos(t*4*speed+bx*2+freqValue*3)*0.8*b*sparkleBoost; break;
+            case 17: const bs=1+Math.sin(t*6+dist*3+freqValue*5)*0.4*b+be; x=bx*bs*sparkleBoost; y=by*bs*sparkleBoost; z=bz*bs*sparkleBoost; break;
+            case 18: if(sparkle[i]&&be>0.5){const lb=be*5*(Math.sin(t*30+phase)*0.5+0.5); x=bx+Math.sin(t*speed*30+phase)*0.3*lb; y=by+Math.cos(t*speed*25+phase)*0.3*lb; z=bz+Math.sin(t*speed*28+phase)*0.3*lb;} else { x=bx+Math.sin(t*30+dist+phase)*0.1*be*3; y=by+Math.cos(t*25+dist+phase)*0.1*be*3; z=bz+Math.sin(t*28+dist+phase)*0.1*be*3; } break;
+            case 19: const wd=dist*(1+Math.sin(t*5*speed+dist+freqValue*4)*0.5*b); const wa=Math.atan2(bz,bx)+t*4*b*speed; x=Math.cos(wa)*wd*sparkleBoost; z=Math.sin(wa)*wd*sparkleBoost; y+=Math.sin(t*6+wd+phase)*0.5*m*(1+freqValue); break;
+          }
+          pos[idx]=x; pos[idx+1]=y; pos[idx+2]=z;
+        }
+        pts.geometry.attributes.position.needsUpdate = true;
+        const avgSpec = spectrum.length > 0 ? spectrum.reduce((a,b)=>a+b,0)/spectrum.length/255 : 0;
+        pts.material.size = pts.userData.originalSize * (1 + b * 3 + be * 2 + avgSpec * 1.5);
+        pts.material.opacity = 0.5 + b * 0.3 + be * 0.3 + avgSpec * 0.2;
+      });
+    }
+
+    // ========== LINE VISUALIZER ==========
+    const lineSystems = [];
+    function initLines() {
+      while(lineGroup.children.length > 0) lineGroup.remove(lineGroup.children[0]);
+      lineSystems.length = 0;
+      
+      for (let l = 0; l < 3; l++) {
+        const lineGeo = new THREE.BufferGeometry();
+        const linePositions = new Float32Array(256 * 3);
+        const lineColors = new Float32Array(256 * 3);
+        for (let i = 0; i < 256; i++) {
+          linePositions[i*3] = 0; linePositions[i*3+1] = 0; linePositions[i*3+2] = 0;
+          lineColors[i*3] = 1; lineColors[i*3+1] = 0.2; lineColors[i*3+2] = 0.3;
+        }
+        lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+        lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+        const lineMat = new THREE.LineBasicMaterial({ vertexColors: true, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.7 });
+        const line = new THREE.Line(lineGeo, lineMat);
+        line.userData = { layer: l };
+        lineGroup.add(line);
+        lineSystems.push(line);
+      }
+    }
+
+    function applyLineFx(t, b, m, tr, be, spectrum) {
+      lineSystems.forEach((line, lineIndex) => {
+        const positions = line.geometry.attributes.position.array;
+        const colors = line.geometry.attributes.color.array;
+        
+        for (let i = 0; i < 256; i++) {
+          const freqValue = (spectrum[i] || 0) / 255;
+          const angle = (i / 256) * Math.PI * 2;
+          const normalizedIndex = i / 255;
+          let x = 0, y = 0, z = 0;
+          const layerOffset = lineIndex * 0.3;
+          const radius = 2 + layerOffset;
+          const heightScale = 3 + b * 2;
+          
+          switch(currentLineFx) {
+            case 0: x = (normalizedIndex - 0.5) * 5; y = freqValue * heightScale - 2; z = 0; break;
+            case 1: const r1 = radius + freqValue * 1.5 * (1 + be); x = Math.cos(angle) * r1; z = Math.sin(angle) * r1; y = (freqValue - 0.5) * 3 * (1 + b); break;
+            case 2: const r2 = freqValue * 3 * (1 + b * 0.5); x = Math.cos(angle) * r2; z = Math.sin(angle) * r2; y = 0; break;
+            case 3: x = (normalizedIndex - 0.5) * 6; y = freqValue * 2.5 - 1.25; z = Math.sin(angle + t) * 0.5 * m; break;
+            case 4: const barWidth = 6 / 64; x = (i / 64 - 0.5) * 6; y = freqValue * 4 - 2; z = 0; if (i % 4 < 2) { x += barWidth * 0.5; } break;
+            case 5: const r5 = radius + freqValue * 0.8 + Math.sin(t * 3 + normalizedIndex * 10) * 0.3 * b; x = Math.cos(angle) * r5; z = Math.sin(angle) * r5; y = Math.sin(t * 4 + normalizedIndex * 15) * 0.5 * m; break;
+            case 6: const h1 = normalizedIndex * 4 - 2; const hAngle = h1 * 3 + t * 2 * (1 + b); const hR = 1.5 + freqValue * 1.5; x = Math.cos(hAngle) * hR; z = Math.sin(hAngle) * hR; y = h1; break;
+            case 7: const gx = (Math.floor(i / 16) - 8) * 0.5; const gy = (i % 16 - 8) * 0.5; x = gx * (1 + freqValue * 0.5); y = gy * (1 + freqValue * 0.5); z = freqValue * 2 * (1 + b); break;
+            case 8: const sbAngle = angle + t * 0.5; const sbR = freqValue * 3 * (1 + b * 0.5) * Math.abs(Math.sin(angle * 6 + t)); x = Math.cos(sbAngle) * sbR; z = Math.sin(sbAngle) * sbR; y = Math.cos(angle * 8 + t) * 0.5 * m; break;
+            case 9: x = (normalizedIndex - 0.5) * 4; y = freqValue * 3 - 1.5; z = Math.sin(normalizedIndex * 20 + t * 3) * 0.5 * (1 + b) * freqValue; break;
+            case 10: const sides = 6 + Math.floor(b * 6); const pAngle = (i / 256) * Math.PI * 2; const pR = 1.5 + freqValue * 2 * (1 + be); const seg = Math.floor((i / 256) * sides); const segAngle = (seg / sides) * Math.PI * 2; x = Math.cos(segAngle) * pR; z = Math.sin(segAngle) * pR; y = (freqValue - 0.5) * 3; break;
+            case 11: const frAngle = angle; const frR = radius + freqValue * 2; x = Math.cos(frAngle) * frR; z = Math.sin(frAngle) * frR; y = 0; break;
+            case 12: x = (normalizedIndex - 0.5) * 6; y = Math.sin(normalizedIndex * 30 - t * 5) * freqValue * 3; z = Math.cos(normalizedIndex * 25 + t * 4) * freqValue * 1.5; break;
+            case 13: const tkAngle = normalizedIndex * Math.PI * 6 + t; const tkR = 2 + freqValue * 1.5 + Math.sin(t * 2 + normalizedIndex * 20) * 0.5 * b; x = Math.cos(tkAngle) * tkR * 0.5; z = Math.sin(tkAngle) * tkR * 0.5; y = (normalizedIndex - 0.5) * 4 + Math.cos(tkAngle * 2) * 0.5; break;
+            case 14: if (i < 128) { x = (i / 128 - 0.5) * 6; y = freqValue * 3 - 1.5; z = 0; } else { const mi = 255 - i; x = (mi / 128 - 0.5) * 6; y = (spectrum[mi] / 255) * 3 - 1.5; z = 0.2; } break;
+            case 15: const webAngle = angle; const webR = 0.5 + freqValue * 3; x = Math.cos(webAngle) * webR; z = Math.sin(webAngle) * webR; y = (freqValue - 0.5) * 4; if (i % 8 === 0) { x += Math.cos(webAngle * 8) * 0.5; } break;
+            case 16: const cx = Math.floor(i / 16) - 8; const cy = i % 16 - 8; x = cx * 0.4 * (1 + freqValue); y = cy * 0.4 * (1 + freqValue); z = freqValue * 2 * Math.sin(cx * 0.5 + cy * 0.5 + t) * (1 + b); break;
+            case 17: const lAngle = (i / 256 - 0.5) * 1.5; x = lAngle * 4; y = freqValue * 4 * Math.sin(lAngle * 20 + t * 3) - 2; z = 0; break;
+            case 18: x = (normalizedIndex - 0.5) * 4 * (1 + b * 0.5); y = freqValue * 3 * Math.abs(Math.sin(normalizedIndex * 15 + t * 4)) - 1.5; z = Math.sin(normalizedIndex * 10 + t * 2) * 0.5 * m; break;
+            case 19: const infAngle = normalizedIndex * Math.PI * 4; const infR = 2 + freqValue * 1.5; x = Math.cos(infAngle) * infR; z = Math.sin(infAngle) * infR * 0.5; y = Math.sin(infAngle * 2) * 1.5 * (1 + freqValue); break;
+          }
+          
+          positions[i*3] = x;
+          positions[i*3+1] = y;
+          positions[i*3+2] = z;
+          
+          const color = getMusicColor(freqValue, b);
+          colors[i*3] = color.r;
+          colors[i*3+1] = color.g;
+          colors[i*3+2] = color.b;
+        }
+        
+        line.geometry.attributes.position.needsUpdate = true;
+        line.geometry.attributes.color.needsUpdate = true;
+        line.material.opacity = 0.4 + b * 0.4 + be * 0.2;
+      });
+    }
+
+    initParticles();
+    initLines();
+
+    function animate() {
+      const t = performance.now()*0.001;
+      const audio = getAudioData();
+      
+      bass += (audio.bass - bass) * 0.3;
+      mid += (audio.mid - mid) * 0.25;
+      treb += (audio.treb - treb) * 0.2;
+      beatDecay *= 0.9;
+      
+      if (audio.beat > 0.6 && t - lastBeat > 0.2) {
+        beatDecay = 1;
+        lastBeat = t;
+      }
+      
+      applyParticleFx(t, bass, mid, treb, beatDecay, audio.spectrum);
+      applyLineFx(t, bass, mid, treb, beatDecay, audio.spectrum);
+      
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.setupAudioAnalyser = function(audioEl) {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = audioCtx.createMediaElementSource(audioEl);
+      audioAnalyser = audioCtx.createAnalyser();
+      audioAnalyser.fftSize = 512;
+      audioAnalyser.smoothingTimeConstant = 0.7;
+      freqData = new Uint8Array(audioAnalyser.frequencyBinCount);
+      src.connect(audioAnalyser);
+      audioAnalyser.connect(audioCtx.destination);
+    };
+
+    window.changeParticleFx = function(index) {
+      currentParticleFx = index;
+      initParticles();
+      document.querySelectorAll('#particleFxGrid .fx-btn').forEach((b, i) => b.classList.toggle('active', i === index));
+    };
+
+    window.changeLineFx = function(index) {
+      currentLineFx = index;
+      initLines();
+      document.querySelectorAll('#lineFxGrid .fx-btn').forEach((b, i) => b.classList.toggle('active', i === index));
+    };
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth/innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+  </script>
+
+  <script>
+    (function() {
+      const playlist = [
+        { file: 'https://defqon-1.com/music/Electric Hearts.mp3', name: 'Electric Hearts' },
+        { file: 'https://defqon-1.com/music/City Lights.mp3', name: 'City Lights' },
+        { file: 'https://defqon-1.com/music/Digital Fantasy.mp3', name: 'Digital Fantasy' },
+        { file: 'https://defqon-1.com/music/Electric Aurora.mp3', name: 'Electric Aurora' },
+        { file: 'https://defqon-1.com/music/Breaking the Night.mp3', name: 'Breaking the Night' },
+        { file: 'https://defqon-1.com/music/Electric Pulse.mp3', name: 'Electric Pulse' }
+      ];
+      let idx = 0, playing = false, muted = false, vol = 0.7;
+      const audio = new Audio(); audio.volume = vol;
+      
+      const playBtn = document.getElementById('playBtn'), prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn');
+      const muteBtn = document.getElementById('muteBtn'), trackLabel = document.getElementById('trackLabel'), timeLabel = document.getElementById('timeLabel');
+      const progWrap = document.getElementById('progWrap'), progFill = document.getElementById('progFill');
+      const volBar = document.getElementById('volBar'), volFill = document.getElementById('volFill');
+      const pureBtn = document.getElementById('pureBtn'), body = document.body;
+
+      function load(i) {
+        idx = i; audio.src = playlist[i].file; trackLabel.textContent = playlist[i].name;
+        if (!audio._setup) { audio._setup = true; audio.addEventListener('play', function init() { if (window.setupAudioAnalyser) window.setupAudioAnalyser(audio); audio.removeEventListener('play', init); }, { once: true }); }
+      }
+      function toggle() { if (playing) { audio.pause(); playing = false; } else { audio.play().then(() => playing = true).catch(() => playing = false); } playBtn.innerHTML = playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>'; }
+      function next() { idx = (idx + 1) % playlist.length; load(idx); if (playing) audio.play(); }
+      function prev() { idx = (idx - 1 + playlist.length) % playlist.length; load(idx); if (playing) audio.play(); }
+      function fmt(s) { if (isNaN(s)) return '0:00'; const m = Math.floor(s/60), sec = Math.floor(s%60); return `${m}:${sec.toString().padStart(2,'0')}`; }
+      
+      audio.addEventListener('timeupdate', () => { if (audio.duration) { const p = (audio.currentTime/audio.duration)*100; progFill.style.width = p+'%'; timeLabel.textContent = fmt(audio.currentTime); } });
+      audio.addEventListener('loadedmetadata', () => timeLabel.textContent = fmt(audio.duration));
+      audio.addEventListener('ended', next);
+      audio.addEventListener('play', () => { playing = true; playBtn.innerHTML = '<i class="fas fa-pause"></i>'; });
+      audio.addEventListener('pause', () => { playing = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; });
+
+      playBtn.addEventListener('click', toggle);
+      prevBtn.addEventListener('click', prev);
+      nextBtn.addEventListener('click', next);
+      muteBtn.addEventListener('click', () => { muted = !muted; audio.volume = muted ? 0 : vol; muteBtn.innerHTML = muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>'; });
+
+      progWrap.addEventListener('click', e => { const r = progWrap.getBoundingClientRect(); const p = (e.clientX-r.left)/r.width; if (audio.duration) audio.currentTime = p*audio.duration; });
+      volBar.addEventListener('click', e => { const r = volBar.getBoundingClientRect(); vol = (e.clientX-r.left)/r.width; if (!muted) audio.volume = vol; volFill.style.width = (vol*100)+'%'; });
+
+      let pure = false;
+      pureBtn.addEventListener('click', () => {
+        pure = !pure;
+        body.classList.toggle('pure-mode', pure);
+        pureBtn.classList.toggle('active', pure);
+        pureBtn.innerHTML = pure ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+        pureBtn.title = pure ? 'Exit Pure Mode' : 'Pure Music Mode';
+      });
+
+      document.querySelectorAll('#particleFxGrid .fx-btn').forEach(btn => {
+        btn.addEventListener('click', () => { window.changeParticleFx(parseInt(btn.dataset.fx)); });
+      });
+      document.querySelectorAll('#lineFxGrid .fx-btn').forEach(btn => {
+        btn.addEventListener('click', () => { window.changeLineFx(parseInt(btn.dataset.line)); });
+      });
+
+      load(0);
+    })();
+  </script>
+</body>
+</html>
